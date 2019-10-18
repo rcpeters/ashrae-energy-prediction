@@ -8,7 +8,7 @@
 * lightgbm `conda install -c conda-forge lightgbm`
 
 ## Notes:
-Script assumes you have unzipped the datafiles in directory `input/ashrae-energy-prediction/`
+Script assumes you have unzipped the datafiles in relative directory `../input/ashrae-energy-prediction/`
 
 We started with [Simple LGBM Solution](https://www.kaggle.com/ryches/simple-lgbm-solution) we'll be diverging quickly but will also want to keep tabs on it.
 
