@@ -2,6 +2,7 @@
 submission.csv
 input/*
 .DS_Store
+mergePickle.p
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
