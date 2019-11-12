@@ -9,7 +9,7 @@ from itertools import groupby
 
 RESOLUTION_IN_MINUTES = 1
 
-SITE_DATA = {'site_id': 1,
+SITE_DATA = {'site_id': 0,
              'start_datetime':datetime.strptime('2016-01-01', '%Y-%m-%d'),
              'end_datetime':datetime.strptime('2017-01-01', '%Y-%m-%d'),
              'latitude':28.538336,
@@ -22,7 +22,7 @@ SITE_DATA = {'site_id': 1,
 # 1: {'name': 'London', 'lat':51.507351, 'lon':-0.127758},
 
 
-def fetch_historic_weather_data(site_data, file_path:str='.')-> pd.DataFrame:
+def fetch_historic_weather_data(site_data, api_key:str='4b6c6722e6c612fd5f789cee71aa7135', file_path:str='./input')-> pd.DataFrame:
     """
     Fetch Historic Weather data for the given site
 
@@ -41,7 +41,8 @@ def fetch_historic_weather_data(site_data, file_path:str='.')-> pd.DataFrame:
                                                 start_date=site_data.get('start_datetime'),
                                                 end_date=site_data.get('end_datetime'),
                                                 exclude_existing_data=False,
-                                                include_solar=site_data.get('pv')
+                                                include_solar=site_data.get('pv'),
+                                                api_key=api_key,
                                                 )
 
     weather_data = weather_connector.extract_weather_in_range()
@@ -140,7 +141,7 @@ class DarkSkyWeatherConnector(object):
         self.current_weather_data_dict = raw_json['currently']
         flat_daily_df = []
         for hd in raw_json['hourly']['data']:
-            hd['time'] = datetime.fromtimestamp(hd['time'], pytz.timezone('America/New_York'))
+            hd['time'] = datetime.fromtimestamp(hd['time'], pytz.timezone(raw_json['timezone']))
             flat_daily_df.append({k:v for k,v in hd.items() if k!='solar' and k in self.desired_columns})
             flat_daily_df[-1].update(hd.get('solar',{}))
 
@@ -148,7 +149,7 @@ class DarkSkyWeatherConnector(object):
         weather_df = pd.DataFrame(flat_daily_df).set_index('time')
         weather_df[['dni', 'dhi', 'ghi']] = weather_df[['dni', 'dhi', 'ghi']].fillna(value=0)
 
-        return weather_df[self.desired_columns]
+        return weather_df[[c for c in self.desired_columns if c!='time']]
 
 
     def extract_weather_in_range(self):
@@ -189,4 +190,4 @@ class DarkSkyWeatherConnector(object):
 
         return exclusion_list
 
-wd = fetch_historic_weather_data(SITE_DATA)
+# wd = fetch_historic_weather_data(SITE_DATA)
