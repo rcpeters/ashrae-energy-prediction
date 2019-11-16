@@ -3,26 +3,9 @@ import attr
 import pandas as pd
 import pytz
 import requests
-from time import sleep
 from itertools import groupby
 
-
-RESOLUTION_IN_MINUTES = 1
-
-SITE_DATA = {'site_id': 0,
-             'start_datetime':datetime.strptime('2016-01-01', '%Y-%m-%d'),
-             'end_datetime':datetime.strptime('2017-01-01', '%Y-%m-%d'),
-             'latitude':28.538336,
-             'longitude':-81.379234,
-             'pv':True,
-             }
-
-# 2016
-# 0: {'name': 'Orlando', 'lat':28.538336, 'lon':-81.379234},
-# 1: {'name': 'London', 'lat':51.507351, 'lon':-0.127758},
-
-
-def fetch_historic_weather_data(site_data, api_key:str='4b6c6722e6c612fd5f789cee71aa7135', file_path:str='./input')-> pd.DataFrame:
+def fetch_historic_weather_data(site_data, api_key:str, file_path:str='./input')-> pd.DataFrame:
     """
     Fetch Historic Weather data for the given site
 
@@ -189,5 +172,3 @@ class DarkSkyWeatherConnector(object):
         exclusion_list = [key for key, group in groupby(dates_list) if len(list(group)) >= nhours]
 
         return exclusion_list
-
-# wd = fetch_historic_weather_data(SITE_DATA)
