@@ -110,3 +110,4 @@ venv.bak/
 .mypy_cache/
 submission.csv.zip
 submission_meter.csv.zip
+submission_meter.csv
